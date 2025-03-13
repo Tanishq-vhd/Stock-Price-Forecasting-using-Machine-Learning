@@ -36,3 +36,20 @@ predictions = model.predict(X_test)
 
 mse = mean_squared_error(y_test, predictions)
 print(f'Mean Squared Error: {mse:.4f}')
+
+
+stock['MA_10'] = stock['Close'].rolling(window=10).mean()
+stock['MA_50'] = stock['Close'].rolling(window=50).mean()
+
+
+delta = stock['Close'].diff()
+gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+rs = gain / loss
+stock['RSI'] = 100 - (100 / (1 + rs))
+
+
+stock.dropna(inplace=True)
+
+
+print(stock.head())
